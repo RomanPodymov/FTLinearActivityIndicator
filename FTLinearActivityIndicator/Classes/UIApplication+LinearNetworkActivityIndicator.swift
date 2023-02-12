@@ -10,6 +10,12 @@ import UIKit
 
 @available(iOSApplicationExtension, unavailable)
 extension UIApplication {
+    static var isNetworkActivityIndicatorVisible: Bool = false {
+        didSet {
+            ft_setNetworkActivityIndicatorVisible(visible: isNetworkActivityIndicatorVisible)
+        }
+    }
+    
 	@objc final public class func configureLinearNetworkActivityIndicatorIfNeeded() {
 		#if !targetEnvironment(macCatalyst)
 		if #available(iOS 11.0, *) {
@@ -25,6 +31,7 @@ extension UIApplication {
 
 	#if !targetEnvironment(macCatalyst)
 	class func configureLinearNetworkActivityIndicator() {
+        #if !MANUALLY_CHANGE_VISIBILITY
 		DispatchQueue.once {
 			let originalSelector = #selector(setter: UIApplication.isNetworkActivityIndicatorVisible)
 			let swizzledSelector = #selector(ft_setNetworkActivityIndicatorVisible(visible:))
@@ -32,6 +39,7 @@ extension UIApplication {
 			let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
 			method_exchangeImplementations(originalMethod!, swizzledMethod!)
 		}
+        #endif
 		UIViewController.configureLinearNetworkActivityIndicator()
 	}
 

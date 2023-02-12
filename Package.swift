@@ -24,7 +24,15 @@ let package = Package(
         .target(
             name: "FTLinearActivityIndicator",
             dependencies: [],
-            path: "FTLinearActivityIndicator")
+            path: "FTLinearActivityIndicator"),
+        .target(
+            name: "FTLinearActivityIndicatorManual",
+            dependencies: [],
+            path: "FTLinearActivityIndicator",
+            swiftSettings: [
+                .define("MANUALLY_CHANGE_VISIBILITY")
+            ]
+        )
     ],
     swiftLanguageVersions: [.v5]
 )
