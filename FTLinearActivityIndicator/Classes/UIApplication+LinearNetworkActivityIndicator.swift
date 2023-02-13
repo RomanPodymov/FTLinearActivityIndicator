@@ -25,7 +25,7 @@ extension UIApplication {
 
 	#if !targetEnvironment(macCatalyst)
 	class func configureLinearNetworkActivityIndicator() {
-		#if !MANUALLY_SET_INDICATOR_VISIBILITY
+		#if false
 		DispatchQueue.once {
 			let originalSelector = #selector(setter: UIApplication.isNetworkActivityIndicatorVisible)
 			let swizzledSelector = #selector(ft_setNetworkActivityIndicatorVisible(visible:))
@@ -39,7 +39,7 @@ extension UIApplication {
 
 	private struct AssociatedKeys {
 		static var indicatorWindowKey = "FTLinearActivityIndicatorWindowKey"
-		#if MANUALLY_SET_INDICATOR_VISIBILITY
+		#if true
 		static var isLinearNetworkActivityIndicatorVisible = "isLinearNetworkActivityIndicatorVisibleKey"
 		#endif
 	}
@@ -61,7 +61,7 @@ extension UIApplication {
 		}
 	}
 
-	#if MANUALLY_SET_INDICATOR_VISIBILITY
+	#if true
 	public var isLinearNetworkActivityIndicatorVisible: Bool {
 		get {
 			return objc_getAssociatedObject(self, &AssociatedKeys.isLinearNetworkActivityIndicatorVisible) as? Bool ?? false
@@ -80,7 +80,7 @@ extension UIApplication {
 	#endif
 
 	@objc func ft_setNetworkActivityIndicatorVisible(visible: Bool) {
-		#if !MANUALLY_SET_INDICATOR_VISIBILITY
+		#if false
 		self.ft_setNetworkActivityIndicatorVisible(visible: visible) // original implementation
 		#endif
 		
@@ -144,7 +144,7 @@ extension UIApplication {
 				indicator.alpha = 0
 			}) { (finished) in
 				if (finished) {
-					#if MANUALLY_SET_INDICATOR_VISIBILITY
+					#if true
 					indicator.isHidden = !self.isLinearNetworkActivityIndicatorVisible  // might have changed in the meantime
 					self.indicatorWindow?.isHidden = !self.isLinearNetworkActivityIndicatorVisible || self.isStatusBarHidden
 					#else
@@ -157,7 +157,7 @@ extension UIApplication {
 	}
 
 	func ftUpdateNetworkActivityIndicatorAppearance() {
-		#if MANUALLY_SET_INDICATOR_VISIBILITY
+		#if true
 		self.indicatorWindow?.isHidden = !self.isLinearNetworkActivityIndicatorVisible || self.isStatusBarHidden
 		#else
 		self.indicatorWindow?.isHidden = !self.isNetworkActivityIndicatorVisible || self.isStatusBarHidden
