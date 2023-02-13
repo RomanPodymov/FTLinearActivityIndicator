@@ -25,18 +25,12 @@ extension UIApplication {
 
 	#if !targetEnvironment(macCatalyst)
 	class func configureLinearNetworkActivityIndicator() {
-		DispatchQueue.once {
-			let originalSelector = #selector(setter: UIApplication.isNetworkActivityIndicatorVisible)
-			let swizzledSelector = #selector(ft_setNetworkActivityIndicatorVisible(visible:))
-			let originalMethod = class_getInstanceMethod(self, originalSelector)
-			let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
-			method_exchangeImplementations(originalMethod!, swizzledMethod!)
-		}
 		UIViewController.configureLinearNetworkActivityIndicator()
 	}
 
 	private struct AssociatedKeys {
 		static var indicatorWindowKey = "FTLinearActivityIndicatorWindowKey"
+		static var isLinearNetworkActivityIndicatorVisible = "isLinearNetworkActivityIndicatorVisibleKey"
 	}
 
 	var indicatorWindow: UIWindow? {
@@ -49,16 +43,31 @@ extension UIApplication {
 				objc_setAssociatedObject(
 					self,
 					&AssociatedKeys.indicatorWindowKey,
-					newValue as UIWindow?,
+					newValue,
 					.OBJC_ASSOCIATION_RETAIN_NONATOMIC
 				)
 			}
 		}
 	}
 
+	public var isLinearNetworkActivityIndicatorVisible: Bool {
+		get {
+			return objc_getAssociatedObject(self, &AssociatedKeys.isLinearNetworkActivityIndicatorVisible) as? Bool ?? false
+		}
+
+		set {
+			objc_setAssociatedObject(
+				self,
+				&AssociatedKeys.isLinearNetworkActivityIndicatorVisible,
+				newValue,
+				.OBJC_ASSOCIATION_RETAIN_NONATOMIC
+			)
+			ft_setNetworkActivityIndicatorVisible(visible: newValue)
+		}
+	}
 
 	@objc func ft_setNetworkActivityIndicatorVisible(visible: Bool) {
-		self.ft_setNetworkActivityIndicatorVisible(visible: visible) // original implementation
+		// self.ft_setNetworkActivityIndicatorVisible(visible: visible) // original implementation
 
 		if visible {
 			if indicatorWindow == nil {
@@ -120,15 +129,15 @@ extension UIApplication {
 				indicator.alpha = 0
 			}) { (finished) in
 				if (finished) {
-					indicator.isHidden = !self.isNetworkActivityIndicatorVisible  // might have changed in the meantime
-					self.indicatorWindow?.isHidden = !self.isNetworkActivityIndicatorVisible || self.isStatusBarHidden
+					indicator.isHidden = !self.isLinearNetworkActivityIndicatorVisible  // might have changed in the meantime
+					self.indicatorWindow?.isHidden = !self.isLinearNetworkActivityIndicatorVisible || self.isStatusBarHidden
 				}
 			}
 		}
 	}
 
 	func ftUpdateNetworkActivityIndicatorAppearance() {
-		self.indicatorWindow?.isHidden = !self.isNetworkActivityIndicatorVisible || self.isStatusBarHidden
+		self.indicatorWindow?.isHidden = !self.isLinearNetworkActivityIndicatorVisible || self.isStatusBarHidden
 	}
 	#endif
 }

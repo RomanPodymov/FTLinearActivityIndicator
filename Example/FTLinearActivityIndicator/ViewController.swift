@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     }
 
 	@IBAction func toggle(_ sender: Any) {
-		UIApplication.shared.isNetworkActivityIndicatorVisible = !UIApplication.shared.isNetworkActivityIndicatorVisible
+		UIApplication.shared.isLinearNetworkActivityIndicatorVisible.toggle()
 	}
 
 	@IBAction func toggleStandAlone(_ sender: Any) {
