@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "FTLinearActivityIndicator",
-            targets: ["FTLinearActivityIndicator", "FTLinearActivityIndicatorManual"])
+            targets: ["FTLinearActivityIndicator"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -24,15 +24,7 @@ let package = Package(
         .target(
             name: "FTLinearActivityIndicator",
             dependencies: [],
-            path: "FTLinearActivityIndicator"),
-		.target(
-			name: "FTLinearActivityIndicatorManual",
-			dependencies: [],
-			path: "FTLinearActivityIndicator",
-			swiftSettings: [
-				.define("MANUALLY_SET_INDICATOR_VISIBILITY")
-			]
-		)
+            path: "FTLinearActivityIndicator")
     ],
     swiftLanguageVersions: [.v5]
 )
