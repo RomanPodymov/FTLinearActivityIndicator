@@ -9,5 +9,7 @@ import FTLinearActivityIndicator
 import XCTest
 
 class UIDeviceExtensionTests: XCTestCase {
-    func test
+	func testFtModelName() {
+		XCTAssertNil(UIDevice.current.ftModelName)
+	}
 }

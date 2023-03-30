@@ -24,7 +24,11 @@ let package = Package(
         .target(
             name: "FTLinearActivityIndicator",
             dependencies: [],
-            path: "FTLinearActivityIndicator")
+            path: "FTLinearActivityIndicator"),
+		.testTarget(
+			name: "FTLinearActivityIndicatorTests",
+			dependencies: ["FTLinearActivityIndicator"],
+			path: "Tests"),
     ],
     swiftLanguageVersions: [.v5]
 )
